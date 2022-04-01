@@ -3,6 +3,8 @@ import os
 import time
 import traceback
 import requests
+from keys import proxy_key
+
 
 def get_new_proxy():
     """
@@ -16,7 +18,7 @@ def get_new_proxy():
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         "X-RapidAPI-Host": "proxypage1.p.rapidapi.com",
-        "X-RapidAPI-Key": "8596f311femsh16c91d3e3355d37p14befajsn3dd3588db389"
+        "X-RapidAPI-Key": proxy_key
     }
 
     response = requests.request("GET", url, headers=headers, params=querystring)
@@ -24,6 +26,32 @@ def get_new_proxy():
     data = response.json()[0]
 
     return {data['types'][0]: f"{data['types'][0]}://{data['ip']}:{data['port']}"}
+
+
+def get_proxy_from_free_proxy():
+    pass
+
+
+def get_responce_data(url, headers, proxies) -> requests.Response:
+    responce = requests.get(url, headers=headers, proxies=proxies)
+
+    responce_count = 0
+    while responce.status_code != 200:
+        proxy = get_new_proxy()
+        responce = requests.get(url, headers=headers, proxies=proxy)
+        responce_count += 1
+
+        # Чтобы не потратить все ключи API
+        if responce_count > 5:
+            proxy = get_proxy_from_free_proxy()
+            responce = requests.get(url, headers=headers, proxies=proxy)
+            responce_count += 1
+
+            if responce_count > 10:
+                raise ConnectionError(f"Доступ к сайту ограничен. "
+                                      f"Не удалось подобрать прокси. Ошибка {responce.status_code}")
+
+    return responce
 
 
 def cache_json_data(data: dict, cache_main_name: str) -> bool:
