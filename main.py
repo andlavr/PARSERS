@@ -34,6 +34,8 @@ def parse_avito_avto(max_page, cache_json_status: bool = False, cache_db_status:
     all_data = {}
     for link in cars_link:
         all_data[link] = avito_avto.get_car_data_by_link(link)
+        time.sleep(random.randint(3, 5))
+
 
     if cache_json_status:
         cache_json_data(all_data, "avito_avto")

@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from settings import headers, proxies
+from utils import get_new_proxy
 
 
 def get_all_car_links_from_page(page: int = 1) -> Optional[list[str]]:
@@ -20,8 +21,11 @@ def get_all_car_links_from_page(page: int = 1) -> Optional[list[str]]:
     print(url)
     responce = requests.get(url, headers=headers, proxies=proxies)
     if responce.status_code != 200:
+        proxy = get_new_proxy()
+        responce = requests.get(url, headers=headers, proxies=proxy)
+        if responce.status_code != 200:
 
-        raise ConnectionError(f"Доступ к сайту ограничен. Ошибка {responce.status_code}")
+            raise ConnectionError(f"Доступ к сайту ограничен. Ошибка {responce.status_code}")
 
     soup = BeautifulSoup(responce.text, 'html.parser')
 
@@ -39,8 +43,8 @@ def get_car_data_by_link(link: str) -> dict:
     :return:
     """
 
-    responce = requests.get(link, headers=headers)
-    print(responce.status_code)
+    responce = requests.get(link, headers=headers, proxies=proxies)
+    #print(responce.status_code)
     soup = BeautifulSoup(responce.text, 'html.parser')
 
     car_name = get_car_brand_and_model_from_soup(soup)
