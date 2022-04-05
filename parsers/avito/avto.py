@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from settings import headers, proxies
-from utils import get_new_proxy, get_proxy_from_free_proxy, get_responce_data
+from utils import get_new_proxy_from_rapidapi, get_proxy_from_free_proxy, get_responce_data
 
 
 def get_all_car_links_from_page(page: int = 1) -> Optional[list[str]]:

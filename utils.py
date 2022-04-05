@@ -4,9 +4,10 @@ import time
 import traceback
 import requests
 from keys import proxy_key
+from parsers.free_proxy.proxy import get_random_proxy
 
 
-def get_new_proxy():
+def get_new_proxy_from_rapidapi():
     """
 
     :return:
@@ -29,15 +30,18 @@ def get_new_proxy():
 
 
 def get_proxy_from_free_proxy():
-    pass
+    return get_random_proxy()
 
 
-def get_responce_data(url, headers, proxies) -> requests.Response:
-    responce = requests.get(url, headers=headers, proxies=proxies)
+def get_responce_data(url, headers, proxies=None) -> requests.Response:
+    if proxies is None:
+        responce = requests.get(url, headers=headers)
+    else:
+        responce = requests.get(url, headers=headers, proxies=proxies)
 
     responce_count = 0
     while responce.status_code != 200:
-        proxy = get_new_proxy()
+        proxy = get_new_proxy_from_rapidapi()
         responce = requests.get(url, headers=headers, proxies=proxy)
         responce_count += 1
 
@@ -80,4 +84,4 @@ def cache_json_data(data: dict, cache_main_name: str) -> bool:
 
 if __name__ == '__main__':
     # cache_json_data("1234", "avito_avto")
-    print(get_new_proxy())
+    print(get_new_proxy_from_rapidapi())
