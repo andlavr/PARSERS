@@ -1,9 +1,10 @@
 import base64
 import random
 
+import requests
 from bs4 import BeautifulSoup
 
-from utils import get_responce_data
+
 
 querystring = {"type": "HTTP"}
 
@@ -31,7 +32,7 @@ def get_all_proxies_links_from_page(page: int = 1):
     url = 'http://free-proxy.cz/ru/proxylist/country/all/http/uptime/level1'  # {/page} - в конце ссылки
     print(url)
 
-    responce = get_responce_data(url, headers=headers)
+    responce = requests.get(url, headers=headers)
 
     soup = BeautifulSoup(responce.text, 'html.parser')
 

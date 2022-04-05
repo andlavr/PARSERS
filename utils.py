@@ -31,6 +31,7 @@ def get_new_proxy_from_rapidapi():
     show_api_proxy_status()
     return new_proxy
 
+
 def update_api_proxy_status(proxy: dict):
     if not os.path.exists("logs"):
         os.mkdir("logs")
@@ -39,15 +40,13 @@ def update_api_proxy_status(proxy: dict):
         file.write(f'{time.ctime()}: "Change proxy on {proxy}')
         file.write('\n')
 
+
 def show_api_proxy_status():
     year_month = f'{datetime.date.today().year}_{datetime.date.today().month}'
     with open(f'logs\\api_count_{year_month}.log', 'r') as file:
         data = file.read()
     row_count = len(data.split("\n"))-1
     print(f'За {year_month}, сделано {row_count} запросов')
-
-
-    return {data['types'][0]: f"{data['types'][0]}://{data['ip']}:{data['port']}"}
 
 
 def get_proxy_from_free_proxy():
