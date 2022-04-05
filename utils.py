@@ -3,6 +3,7 @@ import os
 import time
 import traceback
 import requests
+import datetime
 from keys import proxy_key
 from parsers.free_proxy.proxy import get_random_proxy
 
@@ -25,6 +26,26 @@ def get_new_proxy_from_rapidapi():
     response = requests.request("GET", url, headers=headers, params=querystring)
 
     data = response.json()[0]
+    new_proxy = {data['types'][0]: f"{data['types'][0]}://{data['ip']}:{data['port']}"}
+    update_api_proxy_status(new_proxy)
+    show_api_proxy_status()
+    return new_proxy
+
+def update_api_proxy_status(proxy: dict):
+    if not os.path.exists("logs"):
+        os.mkdir("logs")
+    year_month = f'{datetime.date.today().year}_{datetime.date.today().month}'
+    with open(f'logs\\api_count_{year_month}.log', 'a') as file:
+        file.write(f'{time.ctime()}: "Change proxy on {proxy}')
+        file.write('\n')
+
+def show_api_proxy_status():
+    year_month = f'{datetime.date.today().year}_{datetime.date.today().month}'
+    with open(f'logs\\api_count_{year_month}.log', 'r') as file:
+        data = file.read()
+    row_count = len(data.split("\n"))-1
+    print(f'За {year_month}, сделано {row_count} запросов')
+
 
     return {data['types'][0]: f"{data['types'][0]}://{data['ip']}:{data['port']}"}
 
@@ -42,6 +63,8 @@ def get_responce_data(url, headers, proxies=None) -> requests.Response:
     responce_count = 0
     while responce.status_code != 200:
         proxy = get_new_proxy_from_rapidapi()
+        print(f'ответ от сайта: {responce.status_code}. Провожу смену прокси')
+        print(f'Новый прокси: {proxy}')
         responce = requests.get(url, headers=headers, proxies=proxy)
         responce_count += 1
 
