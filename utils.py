@@ -54,10 +54,13 @@ def get_proxy_from_free_proxy():
 
 
 def get_responce_data(url, headers, proxies=None) -> requests.Response:
+    params = {
+        'key': 'af0deccbgcgidddjgnvljitntccdduijhdinfgjgfjir'
+    }
     if proxies is None:
-        responce = requests.get(url, headers=headers)
+        responce = requests.get(url, headers=headers, params=params)
     else:
-        responce = requests.get(url, headers=headers, proxies=proxies)
+        responce = requests.get(url, headers=headers, proxies=proxies, params=params)
 
     responce_count = 0
     while responce.status_code != 200:
@@ -106,12 +109,12 @@ def cache_json_data(data: dict, cache_main_name: str) -> bool:
 
 
 def show_my_ip(headers, proxies):
-    if proxies is None:
-        responce = requests.get('http://icanhazip.com/', headers=headers)
-    else:
-        responce = requests.get('http://icanhazip.com/', headers=headers, proxies=proxies)
+    try:
+        responce = requests.get('http://icanhazip.com/', proxies=proxies)
+        print(responce.text)
+    except requests.exceptions.ProxyError:
+        print("Не удалось узнать новый IP")
 
-    print(responce.text)
 
 
 

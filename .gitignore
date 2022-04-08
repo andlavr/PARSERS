@@ -4,6 +4,7 @@ data.json
 .idea
 cache
 keys.py
+SatArea
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
