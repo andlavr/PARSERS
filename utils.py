@@ -76,6 +76,7 @@ def get_responce_data(url, headers, proxies=None) -> requests.Response:
             if responce_count > 10:
                 raise ConnectionError(f"Доступ к сайту ограничен. "
                                       f"Не удалось подобрать прокси. Ошибка {responce.status_code}")
+        show_my_ip(headers, proxies)
 
     return responce
 
@@ -104,6 +105,21 @@ def cache_json_data(data: dict, cache_main_name: str) -> bool:
         return False
 
 
+def show_my_ip(headers, proxies):
+    if proxies is None:
+        responce = requests.get('http://icanhazip.com/', headers=headers)
+    else:
+        responce = requests.get('http://icanhazip.com/', headers=headers, proxies=proxies)
+
+    print(responce.text)
+
+
+
+
+
 if __name__ == '__main__':
     # cache_json_data("1234", "avito_avto")
     print(get_new_proxy_from_rapidapi())
+    # print(requests.get('https://www.ozon.ru/'))
+
+

@@ -44,4 +44,5 @@ def parse_avito_avto(max_page, cache_json_status: bool = False, cache_db_status:
 
 
 if __name__ == '__main__':
+
     parse_avito_avto(1, cache_json_status=True)
